@@ -8,12 +8,9 @@
 
 'use strict';
 
-var path = require('path');
 var each = require('each-async');
 var _ = {
-  each: require('amp-each'),
-  extend: require('amp-extend'),
-  union: require('amp-union')
+  extend: require('amp-extend')
 };
 
 var Runner = require('../lib/runner');
