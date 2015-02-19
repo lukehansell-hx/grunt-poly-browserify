@@ -1,0 +1,48 @@
+{
+  "name": "grunt-poly-browserify",
+  "description": "Grunt plugin to recursively build a site specific .js file for each template following the redirectify structure (including from node_modules).",
+  "version": "0.1.0",
+  "homepage": "https://github.com/lukehansell-hx/grunt-poly-browserify",
+  "author": {
+    "name": "Luke Hansell",
+    "email": "luke.hansell@holidayextras.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lukehansell-hx/grunt-poly-browserify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lukehansell-hx/grunt-poly-browserify/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/lukehansell-hx/grunt-poly-browserify/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "async-each": "^0.1.6",
+    "browserify": "^8.1.3",
+    "each-async": "^1.1.1",
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "gulp": "^3.8.11",
+    "reactify": "^1.0.0",
+    "redirectify": "^1.2.0",
+    "vinyl-source-stream": "^1.0.0"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "gruntplugin"
+  ]
+}
