@@ -17,7 +17,7 @@ var Runner = require('../lib/runner');
 
 module.exports = function(grunt) {
 
-  grunt.registerTask('poly_browserify', 'Grunt plugin to build multiple browserify bundles from one source file.', function() {
+  grunt.registerMultiTask('poly_browserify', 'Grunt plugin to build multiple browserify bundles from one source file.', function() {
     
     var runner = new Runner(grunt);
     var cb = this.async();
@@ -28,9 +28,7 @@ module.exports = function(grunt) {
       externals: [],
       ignores: [],
       excludes: [],
-      browserifyOpts: {},
-      bundleDefault: false,
-      bundles: []
+      browserifyOpts: {}
     });
 
     if(!options.src){
@@ -38,28 +36,13 @@ module.exports = function(grunt) {
       return cb();
     }
     
-    if(options.bundleDefault && !options.dest){
-      grunt.log.error('Default destination must be provided to build the default [options.dest]');
+    if(!options.dest){
+      grunt.log.error('Destination file must be specified [options.dest]');
       return cb();
     }
 
-    grunt.verbose.writeln('Bundling from main file', options.src);
-
-    var bundles = options.bundles;
-    delete options.bundles;
-    if(options.bundleDefault){ bundles.push({name:'default', options: {}}) }
-    
-    each(bundles, function( bundle, index, next ) {
-        var bundleOptions = _.extend({}, options, bundle.options);
-        runner.runBundler(bundle.name, bundleOptions, next); // build branded bundles
-    }, function(err){
-      if(err){
-        grunt.log.error(err);
-      } else {
-        grunt.log.oklns('Bundling Complete');
-        cb();
-      }
-    });
+    grunt.verbose.writeln('Bundling from main file ' + options.src + ' to ' + options.dest);
+    runner.runBundler(this.target, options, cb);
     
   });
 };
