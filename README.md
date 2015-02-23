@@ -2,7 +2,7 @@
 
 > Grunt plugin to build multiple Browserify bundles from one source file.
 
-As the name suggests, this grunt tasks builds Browserify bundles. Using this plugin you can create multiple bundles
+As the name suggests, this grunt tasks builds [Browserify](http://browserify.org/) bundles. Using this plugin you can create multiple bundles
 from a single starting file. For instance you can easily build a minified and non-minified version of you package in
 one build step.
 
@@ -41,12 +41,11 @@ grunt.initConfig({
       ignores: [],
       excludes: [],
       browserifyOpts: {},
-      bundleDefault: false,
-      bundles: [
-        {
-          name: 'bundle name',
-          options: {}
-      ]
+    },
+    bundle_one: {
+      options: {
+        dest: 'path/to/dest/override'
+      }
     }
   }
 });
@@ -94,51 +93,108 @@ Default: `{}`
 
 An object of options which is passed directly to Browserify on instantiation.
 
-#### options.bundleDefault
-Type: `Boolean`
-Default: `false`
+### Adding bundle outputs
 
-A flag which dictates whether or not to build a bundle using the default settings.
+To output a bundle you must specify it's configuration (see `poly_browserify.bundle_one` in example above).
+You can specify as many bundles to build as you require and by specifying options in the bundle config you can override
+the defaults to do whatever you require.
 
-If true then the `options.dest` param must be provided.
-
-#### options.bundles
-Type: `Array`
-Default: `[]`
-
-This is where you specify your bundles to build. Each bundle follows the following layout:
-
-`
-{
-  name: 'bundleName'
-  options: {}
-}
-`
-
-##### bundle.name
-Type: `String`
-
-The name of your bundle
-
-##### bundle.options
+##### *bundle_name*.options
 Type: `Object`
 
 This object is used when building your bundles. The options provided here overwrite the default options. For example:
 
 `
 {
-  src: 'source.js'
-  dest: 'foo.js'
-  bundles: [
-    {
-      name: 'bar',
-      dest: 'bar.js'
-    }
-  ]
+  options: {
+    src: 'source.js'
+    dest: 'foo.js'
+  },
+  bundle_one: {
+    dest: 'bar.js'
+  }
 }
 `
 
-The above example would write the output to the file `bar.js`.
+Running the plugin with the above options would write the output to the file `bar.js`.
+
+## Running on the Command line
+On the command line you can run all bundles specified in the options with:
+
+`grunt poly_browserify`
+
+Or you can run a specific bundle by specifying it as follows:
+
+`grunt poly_browserify:[bundle_name]'
+
+e.g:
+
+`grunt poly_browserify:bundle_one`
+
+## Example
+
+Using one entry point to an app we require multiple *.js* files to be created so that we can override the branding on
+the generated single page apps.
+
+For this we will be using [redirectify](https://www.npmjs.com/package/redirectify), a browserify transform which allows me
+to override files loaded based on a provided directory.
+
+My file structure therefore looks like the following:
+
+```
+app.js
+- script
+    - brand_a
+        - feature1.js
+    - feature1.js
+    - feature2.js
+```
+
+In this example `app.js` requires `script/feature1.js` and `script/feature2.js`. 
+We want to build 2 *.js* files: the `default.js` and `brand_a.js`. `brand_a.js` should use overriding files for brand
+specific functionality where available `script/brand_a/feature1.js` instead of `script/feature1.js`.
+
+Using redirectify we can specify that, when attempting to load a file, browserify should check to see if a directory of
+the name `brand_a` exists. If so, and the requested filename also exists in that directory, load the file from that directory.
+This way, if app.js contains the following code:
+
+```
+var f1 = require('./script/feature1');
+var f2 = require('./script/feature2');
+```
+and we specify `brand_a` as our overriding directory we can load `./script/brand_a/feature1.js`, but since 
+`./script/brand_a/feature2.js` doesn't exist `./script/feature2.js` is used.
+
+Using grunt_poly_browserify we can automate the building of these two distinct files. My configuration in the gruntfile
+would look like this:
+
+```
+poly_browserify: {
+  options: {
+    dest: 'default.js',
+    src: 'app.js'
+  },
+  brand_a: {
+    options: {
+      dest: 'brand_a.js',
+      transforms: [
+        ['redirectify', {dir: 'brand_a'}]
+      ]
+    }
+  },
+  default: {}
+}
+```
+
+When building the brand `default` from this config then the default params provided in `poly_browserify.options` are used
+so the file is written to `default.js` from `app.js` and the default features are required.
+
+However, when building `brand_a` the config provided is overwritten by the params specified in `poly_browserify.brand_a.options`.
+Therefore the output file is `brand_a.js`, but the source file is still `app.js`. Also, because redirectify is specified as
+a transform, with the overriding directory `brand_a`, `script/brand_a/feature1` is required instead of the default.
+
+After running `grunt poly_browserify` we will now have two new files: `default.js` and `brand_a.js` which contain
+the default and overwritten bundled javascript.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
