@@ -1,7 +1,7 @@
 {
   "name": "grunt-poly-browserify",
   "description": "Grunt plugin to recursively build a site specific .js file for each template following the redirectify structure (including from node_modules).",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/lukehansell-hx/grunt-poly-browserify",
   "author": {
     "name": "Luke Hansell",
