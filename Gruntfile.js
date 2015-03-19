@@ -6,26 +6,28 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
-
 module.exports = function(grunt) {
 
+  require('load-grunt-tasks')(grunt);
+  
   // Project configuration.
   grunt.initConfig({
     jshint: {
       all: [
         'Gruntfile.js',
-        'tasks/*.js'
+        'tasks/*.js',
+        'lib/*.js'
       ]
     },
 
     // Configuration to be run (and then tested).
-    template_branding: {
-    },
+    poly_browserify: {},
 
     // Unit tests.
-    nodeunit: {
-      tests: ['test/*_test.js']
+    mochaTest: {
+      test: {
+        src: ['tests/**/*_test.js']
+      }
     }
 
   });
@@ -33,6 +35,6 @@ module.exports = function(grunt) {
   // Actually load this plugin's task(s).
   grunt.loadTasks('tasks');
 
-  // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+  grunt.registerTask('test', ['mochaTest']);
+  grunt.registerTask('default', ['jshint', 'test']);
 };
