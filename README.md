@@ -133,7 +133,7 @@ e.g:
 
 ## Example
 
-Using one entry point to an app we require multiple *.js* files to be created so that we can override the branding on
+Using one entry point to an app we require multiple *.js* files to be created. This will allow us to override the branding on
 the generated single page apps.
 
 For this we will be using [redirectify](https://www.npmjs.com/package/redirectify), a browserify transform which allows me
