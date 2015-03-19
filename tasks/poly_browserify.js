@@ -6,9 +6,6 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
-
-var each = require('each-async');
 var _ = {
   extend: require('amp-extend')
 };
