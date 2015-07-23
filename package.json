@@ -41,7 +41,8 @@
     "jshint-stylish": "~0.1.5",
     "load-grunt-tasks": "~0.3.0",
     "mocha": "^2.1.0",
-    "sinon": "^1.13.0"
+    "sinon": "^1.13.0",
+    "watchify": "^3.2.2"
   },
   "peerDependencies": {
     "grunt": "~0.4.5"

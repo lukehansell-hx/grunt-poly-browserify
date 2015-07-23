@@ -41,6 +41,8 @@ grunt.initConfig({
       ignores: [],
       excludes: [],
       browserifyOpts: {},
+      watch: false,
+      keepAlive: false
     },
     bundle_one: {
       options: {
@@ -92,6 +94,18 @@ Type: `Object`
 Default: `{}`
 
 An object of options which is passed directly to Browserify on instantiation.
+
+#### options.watch
+Type: `Boolean`
+Default: `false`
+
+Use watchify instead of browserify to watch the source for changes and recompile automatically.
+
+#### options.keepAlive
+Type: `Boolean`
+Default: `false`
+
+Keep the task alive in conjunction with `watch`.
 
 ### Adding bundle outputs
 
@@ -150,7 +164,7 @@ app.js
     - feature2.js
 ```
 
-In this example `app.js` requires `script/feature1.js` and `script/feature2.js`. 
+In this example `app.js` requires `script/feature1.js` and `script/feature2.js`.
 We want to build 2 *.js* files: the `default.js` and `brand_a.js`. `brand_a.js` should use overriding files for brand
 specific functionality where available `script/brand_a/feature1.js` instead of `script/feature1.js`.
 
@@ -162,7 +176,7 @@ This way, if app.js contains the following code:
 var f1 = require('./script/feature1');
 var f2 = require('./script/feature2');
 ```
-and we specify `brand_a` as our overriding directory we can load `./script/brand_a/feature1.js`, but since 
+and we specify `brand_a` as our overriding directory we can load `./script/brand_a/feature1.js`, but since
 `./script/brand_a/feature2.js` doesn't exist `./script/feature2.js` is used.
 
 Using grunt_poly_browserify we can automate the building of these two distinct files. My configuration in the gruntfile
