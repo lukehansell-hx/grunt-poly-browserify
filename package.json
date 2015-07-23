@@ -31,7 +31,8 @@
     "amp-extend": "^1.0.1",
     "browserify": "^8.1.3",
     "each-async": "^1.1.1",
-    "grunt": "~0.4.5"
+    "grunt": "~0.4.5",
+    "watchify": "^3.2.2"
   },
   "devDependencies": {
     "chai": "^2.1.1",
@@ -41,8 +42,7 @@
     "jshint-stylish": "~0.1.5",
     "load-grunt-tasks": "~0.3.0",
     "mocha": "^2.1.0",
-    "sinon": "^1.13.0",
-    "watchify": "^3.2.2"
+    "sinon": "^1.13.0"
   },
   "peerDependencies": {
     "grunt": "~0.4.5"
