@@ -1,7 +1,7 @@
 var grunt = require('grunt');
 var should = require('chai').should();
 var sinon = require('sinon');
-
+var watchify = require('watchify');
 var Runner = require('../../lib/runner');
 
 describe('runner.js', function(){
@@ -9,7 +9,7 @@ describe('runner.js', function(){
   beforeEach(function(){
     this.runner = new Runner(grunt);
   });
-  
+
   describe('instantiation', function(){
     it('should be requireable without erroring', function(){
       should.not.Throw(require('../../lib/runner'));
@@ -19,11 +19,11 @@ describe('runner.js', function(){
     });
   });
   describe('runBundler()', function(){
-  
+
     beforeEach(function(){
       this.cb = sinon.spy();
     });
-  
+
     describe('without src', function(){
       beforeEach(function(){
         this.runner.runBundler('foo',{browserifyOptions:{}}, this.cb)
@@ -32,21 +32,21 @@ describe('runner.js', function(){
       it('should call callback', function(){
         this.cb.called.should.equal(true);
       });
-      
+
       it('should pass an error to callback', function(){
         this.cb.args[0][0].should.be.instanceOf(Error);
       });
     });
-    
+
     describe('options.transforms', function(){
       beforeEach(function(){
         this.runner__applyTransforms = sinon.spy(this.runner, '__applyTransforms');
       });
-      
+
       afterEach(function(){
         this.runner__applyTransforms.restore();
       });
-         
+
       describe('are included', function(){
         beforeEach(function(){
           this.runner.runBundler('foo',{src:'bar.js', transforms: {}}, this.cb);
@@ -56,7 +56,7 @@ describe('runner.js', function(){
           this.runner__applyTransforms.called.should.equal(true);
         });
       });
-      
+
       describe('are not included', function(){
         beforeEach(function(){
           this.runner.runBundler('foo',{src:'bar.js'}, this.cb);
@@ -67,7 +67,7 @@ describe('runner.js', function(){
         });
       });
     });
-    
+
     describe('options.requires', function(){
       beforeEach(function(){
         this.runner__applyRequires = sinon.spy(this.runner, '__applyRequires');
@@ -97,7 +97,7 @@ describe('runner.js', function(){
         });
       });
     });
-    
+
     describe('options.externals', function(){
       beforeEach(function(){
         this.runner__applyExternals = sinon.spy(this.runner, '__applyExternals');
@@ -127,7 +127,7 @@ describe('runner.js', function(){
         });
       });
     });
-    
+
     describe('options.ignores', function(){
       beforeEach(function(){
         this.runner__applyIgnores = sinon.spy(this.runner, '__applyIgnores');
@@ -157,7 +157,7 @@ describe('runner.js', function(){
         });
       });
     });
-    
+
     describe('options.excludes', function(){
       beforeEach(function(){
         this.runner__applyExcludes = sinon.spy(this.runner, '__applyExcludes');
@@ -185,6 +185,23 @@ describe('runner.js', function(){
         it('does not call __applyExcludes', function(){
           this.runner__applyExcludes.called.should.not.equal(true);
         });
+      });
+    });
+    describe('options.watch', function(){
+      beforeEach(function(){
+        // Stub out to prevent throwing.
+        this.runner.watchify = sinon.stub();
+        this.runner.watchify.returns({on: sinon.stub()});
+        this.runner.__bundle = sinon.stub();
+        this.runner.browserify = sinon.stub();
+      });
+      it ('calls watchify instead of browserify when watch is true', function(){
+        this.runner.runBundler('foo', {src: 'bar.js', requires: {}, watch: true}, this.cb);
+        this.runner.watchify.called.should.equal(true);
+      });
+      it ('calls browserify instead of watchify when watch is false', function(){
+        this.runner.runBundler('foo', {src: 'bar.js', requires: {}, watch: false}, this.cb);
+        this.runner.watchify.called.should.equal(false);
       });
     });
   });
@@ -215,7 +232,7 @@ describe('runner.js', function(){
       });
     });
   });
-  
+
   describe('__applyRequires', function(){
     beforeEach(function(){
       this.bundleInstance = {
